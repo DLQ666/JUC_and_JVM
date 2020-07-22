@@ -1,5 +1,6 @@
 package com.dlq.juc;
 
+import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -7,10 +8,50 @@ class Aircondition{
 
     private int number = 0;
 
-    private Lock lock = new ReentrantLock();
+    private Lock lock = new ReentrantLock(); //可重入非公平递归锁
+    final Condition condition  = lock.newCondition();
 
-    public synchronized void increment()throws Exception{
+    public void increment()throws Exception{
 
+        lock.lock();
+        try {
+            //1、判断
+            while (number != 0){
+                condition.await();//this.wait();
+            }
+            //2、干活
+            number++;
+            System.out.println(Thread.currentThread().getName()+"\t"+ number);
+            //3、通知
+            condition.signalAll();//this.notifyAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+    public void decrement()throws Exception{
+
+        lock.lock();
+        try {
+            //1、判断
+            while (number == 0){
+                condition.await();//this.wait();
+            }
+            //2、干活
+            number--;
+            System.out.println(Thread.currentThread().getName()+"\t"+ number);
+            //3、通知
+            condition.signalAll();//this.notifyAll();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+
+    /*public synchronized void increment()throws Exception{
         //1、判断
         while (number != 0){
             this.wait();
@@ -21,7 +62,6 @@ class Aircondition{
         //3、通知
         this.notifyAll();
     }
-
     public synchronized void decrement()throws Exception{
         //1、判断
         while (number == 0){
@@ -32,7 +72,7 @@ class Aircondition{
         System.out.println(Thread.currentThread().getName()+"\t"+ number);
         //3、通知
         this.notifyAll();
-    }
+    }*/
 
 }
 
@@ -49,6 +89,8 @@ class Aircondition{
     1、  高聚低合前提下，线程操作资源类
     2、  判断/干活/通知
     3、  防止虚假唤醒 千万不能用if判断 --> 如果忘了就TM再看一遍阳哥视频补补
+
+    知识点小总结 = 多线程编程套路+while判断+新版写法
  */
 public class ProdConsumerDemo04 {
 
