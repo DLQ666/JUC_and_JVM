@@ -19,6 +19,7 @@ class Ticket{ //资源类 = 实例变量 + 实例方法
             lock.unlock();
         }
     }
+
 }
 
 /**
@@ -42,26 +43,12 @@ public class SaleTicketDemo01 {
 
 //        @FunctionalInterface
 //        public interface Runnable {
-//
 //            public abstract void run();
 //        }
 
         new Thread(() -> {for (int i = 0; i <=40 ; i++) ticket.sale();},"A").start();
         new Thread(() -> {for (int i = 0; i <=40 ; i++) ticket.sale();},"B").start();
         new Thread(() -> {for (int i = 0; i <=40 ; i++) ticket.sale();},"C").start();
-
-
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (int i = 0; i <=40 ; i++) ticket.sale();
-                {
-                    ticket.sale();
-                }
-            }
-        },"A").start();
-
 
 
 
@@ -74,15 +61,17 @@ public class SaleTicketDemo01 {
                 }
             }
         },"A").start();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for (int i = 0; i <=40 ; i++) ticket.sale();
+                for (int i = 0; i <=40 ; i++)
                 {
                     ticket.sale();
                 }
             }
-        },"B").start();*/
+        },"B").start();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -90,7 +79,7 @@ public class SaleTicketDemo01 {
                     ticket.sale();
                 }
             }
-        },"C").start();
+        },"C").start();*/
 
     }
 }

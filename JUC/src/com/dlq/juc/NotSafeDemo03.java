@@ -12,6 +12,8 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author: Hasee
  * @create: 2020-07-21 16:30
  *
+ * 举例说明集合类是不安全的
+ *
  * 1、故障现象
  *  java.util.ConcurrentModificationException
  *
@@ -33,18 +35,18 @@ import java.util.concurrent.locks.ReentrantLock;
 public class NotSafeDemo03 {
     public static void main(String[] args) {
 
-        Map<String, String> map = new ConcurrentHashMap<>();//Collections.synchronizedMap(new HashMap<>());//new HashMap<>();
-
+        /*//list集合不安全演示
+        List<Object> list = new ArrayList<>();
         for (int i = 1; i <= 30; i++) {
             new Thread(() -> {
-                map.put(Thread.currentThread().getName(), UUID.randomUUID().toString().substring(0, 8));
-                System.out.println(map);
+                list.add(UUID.randomUUID().toString().substring(0,8));
+                System.out.println(list);
             }, String.valueOf(i)).start();
-        }
-        new HashMap<>();
+        }*/
+        listSafe();
     }
 
-    private static void setNotSafe() {
+    private static void setSafe() {
         Set<String> set = new CopyOnWriteArraySet<>();
 
         for (int i = 1; i <= 30; i++) {
@@ -55,7 +57,8 @@ public class NotSafeDemo03 {
         }
     }
 
-    private static void listNotSafe() {
+    private static void listSafe() {
+        //写时复制->解决多线程环境下List集合线程不安全问题
         List<String> list = new CopyOnWriteArrayList<>();//Collections.synchronizedList(new ArrayList<>());//new Vector<>();//new ArrayList<>();
 
         for (int i = 1; i <= 30; i++) {

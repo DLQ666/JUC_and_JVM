@@ -15,27 +15,31 @@ package com.dlq.juc;
  *
  *  1、拷贝中括号，写死右箭头，落地大括号
  *  2、@FunctionalInterface
- *  3、default
- *  4、static
- *
+ *  3、default  可以有多个
+ *  4、static  可以有多个
  *
  *  Lambda表达式 解决了匿名内部类代码冗余的一个语法现象
- *
  */
 @FunctionalInterface
 interface Foo{
 //    public void sayHello();
     public int add(int x, int y);
 
-
+    //3、default
     default int mul(int x, int y){
         return x * y;
     }
+    default int mul2(int x, int y){
+        return x * y;
+    }
 
+    //4、static
     static int div(int x, int y) {
         return x / y;
     }
-
+    static int div2(int x, int y) {
+        return x / y;
+    }
 }
 
 public class LambdaExpressDemo02 {
@@ -60,8 +64,8 @@ public class LambdaExpressDemo02 {
         };
         System.out.println(foo.add(3,5));
 
-        System.out.println(foo.mul(3,5));
+        System.out.println(foo.mul2(3,5));
 
-        System.out.println(Foo.div(10,2));
+        System.out.println(Foo.div2(10,2));
     }
 }
