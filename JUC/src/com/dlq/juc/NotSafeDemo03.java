@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @program: JUC_JVM
@@ -26,6 +25,10 @@ import java.util.concurrent.locks.ReentrantLock;
  *      3.3、new CopyOnWriteArrayList<>();
  *
  *      setNotSafe::::
+ *      Collections.synchronizedSet(new HashSet<>())
+ *      new CopyOnWriteArraySet<>()
+ *
+ *      mapNotSafe::::
  *      3.4、Collections.synchronizedMap(new HashMap<>());
  *      3.5、new ConcurrentHashMap<>();
  *
@@ -35,20 +38,46 @@ import java.util.concurrent.locks.ReentrantLock;
 public class NotSafeDemo03 {
     public static void main(String[] args) {
 
-        /*//list集合不安全演示
-        List<Object> list = new ArrayList<>();
+        //map集合线程不安全演示
+        Map<String,String> map = new HashMap<>();
+        for (int i = 1; i <= 30; i++) {
+            new Thread(() -> {
+                map.put(Thread.currentThread().getName(),UUID.randomUUID().toString().substring(0,8));
+                System.out.println(map);
+            }, String.valueOf(i)).start();
+        }
+
+        //set集合线程不安全演示
+        /*Set<Object> set = new HashSet<>();
+        for (int i = 1; i <= 30; i++) {
+            new Thread(() -> {
+                set.add(UUID.randomUUID().toString().substring(0,8));
+                System.out.println(set);
+            }, String.valueOf(i)).start();
+        }*/
+
+        //list集合线程不安全演示
+        /*List<Object> list = new ArrayList<>();
         for (int i = 1; i <= 30; i++) {
             new Thread(() -> {
                 list.add(UUID.randomUUID().toString().substring(0,8));
                 System.out.println(list);
             }, String.valueOf(i)).start();
         }*/
-        listSafe();
+    }
+
+    private static void mapSafe() {
+        Map<String, String> hashMap = new ConcurrentHashMap<>();//Collections.synchronizedMap(new HashMap<>());
+        for (int i = 1; i <= 30; i++) {
+            new Thread(() -> {
+                hashMap.put(Thread.currentThread().getName(), UUID.randomUUID().toString().substring(0,8));
+                System.out.println(hashMap);
+            }, String.valueOf(i)).start();
+        }
     }
 
     private static void setSafe() {
-        Set<String> set = new CopyOnWriteArraySet<>();
-
+        Set<String> set = new CopyOnWriteArraySet<>();//Collections.synchronizedSet(new HashSet<>());
         for (int i = 1; i <= 30; i++) {
             new Thread(() -> {
                 set.add(UUID.randomUUID().toString().substring(0,8));
@@ -59,7 +88,7 @@ public class NotSafeDemo03 {
 
     private static void listSafe() {
         //写时复制->解决多线程环境下List集合线程不安全问题
-        List<String> list = new CopyOnWriteArrayList<>();//Collections.synchronizedList(new ArrayList<>());//new Vector<>();//new ArrayList<>();
+        List<String> list = new CopyOnWriteArrayList<>();//Collections.synchronizedList(new ArrayList<>());//new Vector<>();
 
         for (int i = 1; i <= 30; i++) {
             new Thread(() -> {
