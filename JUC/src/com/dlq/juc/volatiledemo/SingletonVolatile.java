@@ -11,9 +11,10 @@ public class SingletonVolatile {
     private static volatile SingletonVolatile instance = null;
 
     private SingletonVolatile(){
-
+        System.out.println(Thread.currentThread().getName()+"\t 我是构造方法 SingletonVolatile()");
     }
 
+    //DCL （Double check Lock 双端检锁机制）
     public static SingletonVolatile getInstance() {
         if (instance == null){
             synchronized (SingletonVolatile.class){
@@ -23,5 +24,21 @@ public class SingletonVolatile {
             }
         }
         return instance;
+    }
+
+    public static void main(String[] args) {
+
+        //单线程（main线程的操作动作。。。。。。。。。。）
+//        System.out.println(SingletonDemo.getInstance() == SingletonDemo.getInstance());
+//        System.out.println(SingletonDemo.getInst  ance() == SingletonDemo.getInstance());
+//        System.out.println(SingletonDemo.getInstance() == SingletonDemo.getInstance());
+
+        //System.out.println();
+
+        for (int i = 1; i <=10; i++) {
+            new Thread(() ->{
+                SingletonVolatile.getInstance();
+            },String.valueOf(i)).start();
+        }
     }
 }
