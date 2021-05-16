@@ -18,8 +18,8 @@ class MyData{
     }
 
     //请注意，此时number 前面是加了 volatile关键字修饰的，volatile不保证原子性
-    public void addPlusPlus(){
-        number ++ ;
+    public void addPlusPlus() {
+        number++;
     }
 
     AtomicInteger atomicInteger = new AtomicInteger();
